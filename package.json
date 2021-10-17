@@ -1,0 +1,11 @@
+{
+  "name": "madden-profiles",
+  "version": "1.0.0",
+  "description": "A library of Madden profiles for use with madden-file-tools to parse resources from Madden games.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT"
+}

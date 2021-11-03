@@ -1,0 +1,4 @@
+id: madden22
+name: Madden 22
+description: This plugin allows you to read and write to the Madden 22 game files.
+loader: loader.js

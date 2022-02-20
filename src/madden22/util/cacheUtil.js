@@ -3,25 +3,23 @@ const zlib = require('zlib');
 const fs = require('fs/promises');
 const envPathUtil = require('./envPathUtil');
 
-const CACHE_LOCATION = path.join(envPathUtil.config, 'm22.cache');
-
-module.exports.buildAndSaveCache = (data) => {
+module.exports.buildAndSaveCache = (cacheName, data) => {
     return new Promise(async (resolve, reject) => {
         zlib.gzip(JSON.stringify(data), async (err, compressedData) => {
             if (err) {
                 reject(err);
             }
 
-            await fs.writeFile(CACHE_LOCATION, compressedData);
+            await fs.writeFile(path.join(envPathUtil.config, cacheName), compressedData);
             resolve(compressedData);
         });
     });
 };
 
-module.exports.getCache = () => {
+module.exports.getCache = (cacheName) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const compressedCache = await fs.readFile(CACHE_LOCATION);
+            const compressedCache = await fs.readFile(path.join(envPathUtil.config, cacheName));
 
             zlib.gunzip(compressedCache, (err, decompressedData) => {
                 if (err) {
@@ -35,4 +33,9 @@ module.exports.getCache = () => {
             reject(err);
         }
     });
+};
+
+module.exports.CACHES = {
+    GAME: 'm22.cache',
+    TYPES: 'm22.type.cache'
 };

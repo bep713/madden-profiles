@@ -158,9 +158,18 @@ class EBXDataReader {
                     fieldObj.value = new EBXPointer(EBXPointer.TYPES.EXTERNAL, ref);
                 }
                 else {
-                    const dataOffsetToLookup = (fieldObj.ebxDataOffset + pointerOffset) + 16;
-                    const ref = this._file.ebx.efix.dataOffsets.findIndex((offset) => { return offset === dataOffsetToLookup; });
-                    fieldObj.value = new EBXPointer(EBXPointer.TYPES.INTERNAL, ref);
+                    const dataOffset = (fieldObj.ebxDataOffset + pointerOffset);
+                    // const ref = this._file.ebx.efix.dataOffsets.findIndex((offset) => { return offset === dataOffsetToLookup; });
+
+                    let pointerDataObject = new EBXDataObject();
+                    const classRef = this._buf.readInt32LE(dataOffset);
+                    const pointerType = this._types.getTypeByClassGuid(this._file.ebx.efix.classTypes[classRef]);
+                    pointerDataObject.type = pointerType;
+
+                    // console.log(`Pointer: ${pointerType.name} @ offset: ${dataOffset.toString(16)}`);
+
+                    pointerDataObject.fields = this._readFields(pointerType, dataOffset);
+                    fieldObj.value = new EBXPointer(EBXPointer.TYPES.INTERNAL, pointerDataObject);
                 }
 
                 break;

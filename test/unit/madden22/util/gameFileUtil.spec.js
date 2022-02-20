@@ -14,7 +14,7 @@ describe('M22 Game File Util unit tests', () => {
 
         it('returns expected number of results', async () => {
             const casFiles = await m22GameFileUtil.getAllCasFilesFromExe(M22_EXE_PATH);
-            expect(casFiles.length).to.equal(47);
+            expect(casFiles.length).to.equal(70);
         });
 
         it('isPatch is false for data CAS files', async () => {
@@ -33,6 +33,20 @@ describe('M22 Game File Util unit tests', () => {
             });
 
             expect(firstCasFile.relativePath).to.equal(path.join('Data/Win32/superbundlelayout', 'madden_installpackage_00', 'cas_01.cas'));
+        });
+    });
+
+    describe('getInitFsPathFromExe', () => {
+        it('function exists', () => {
+            expect(m22GameFileUtil.getInitFsPathFromExe).to.exist;
+        });
+
+        it('returns expected path', async () => {
+            const initFsPath = await m22GameFileUtil.getInitFsPathFromExe(M22_EXE_PATH);
+            expect(initFsPath).to.eql({
+                patch: 'D:\\Games\\Madden NFL 22\\Patch\\initfs_Win32',
+                data: 'D:\\Games\\Madden NFL 22\\Data\\initfs_Win32'
+            });
         });
     });
 });

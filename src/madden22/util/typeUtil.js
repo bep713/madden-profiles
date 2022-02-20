@@ -1,12 +1,8 @@
-const path = require('path');
-const fs = require('fs/promises');
 const { exec } = require('child_process');
 const MemoryManager = require('madden-file-tools/services/MemoryManager');
 const maddenTypeService = require('madden-file-tools/services/maddenTypeService');
-const envPathUtil = require('../util/envPathUtil');
 
-const PROCESS_NAME = 'Madden22.exe';
-const TYPE_CACHE_NAME = 'm22.types';
+const PROCESS_NAME = 'Madden22_orig.exe';
 
 module.exports.buildAndSaveTypes = async (options) => {
     if (!options || !options.path) { 

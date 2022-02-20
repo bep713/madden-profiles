@@ -50,3 +50,17 @@ module.exports.getAllCasFilesFromExe = async (exePath) => {
         return promises;
     }
 };
+
+module.exports.getInitFsPathFromExe = async (exePath) => {
+    // Get list of directories in madden install path
+    const dirs = await fs.readdir(path.join(exePath, '../'));
+    
+    // Find patch folder
+    const patchDir = dirs.find((dir) => { return dir === 'Patch'; });
+
+    // Check if patch exists
+    return {
+        patch: path.join(exePath, '../Patch/initfs_Win32'),
+        data: path.join(exePath, '../Data/initfs_Win32')
+    };
+};

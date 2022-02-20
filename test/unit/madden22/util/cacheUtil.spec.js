@@ -47,7 +47,7 @@ describe('cache util unit tests', () => {
         });
 
         it('returns a promise', () => {
-            expect(cacheUtil.buildAndSaveCache()).to.be.an.instanceOf(Promise);
+            expect(cacheUtil.buildAndSaveCache('name')).to.be.an.instanceOf(Promise);
         });
 
         it('compresses the data', async () => {
@@ -56,47 +56,49 @@ describe('cache util unit tests', () => {
                 name: 'test'
             }];
 
-            await cacheUtil.buildAndSaveCache(cacheArgs);
+            await cacheUtil.buildAndSaveCache('name', cacheArgs);
 
             expect(zlibSpy.gzip.callCount).to.equal(1);
             expect(zlibSpy.gzip.firstCall.args[0]).to.eql(JSON.stringify(cacheArgs));
         });
 
         it('saves the cache', async () => {
-            await cacheUtil.buildAndSaveCache([{}]);
+            await cacheUtil.buildAndSaveCache('name', [{}]);
 
             expect(fsSpy.writeFile.callCount).to.equal(1);
-            expect(fsSpy.writeFile.firstCall.args[0]).to.equal('C:\\test\\m22.cache');
+            expect(fsSpy.writeFile.firstCall.args[0]).to.equal('C:\\test\\name');
             expect(fsSpy.writeFile.firstCall.args[1]).to.eql(Buffer.from([0x00]));
         });
 
         it('returns the expected result', async () => {
-            const result = await cacheUtil.buildAndSaveCache([{}]);
+            const result = await cacheUtil.buildAndSaveCache('name', [{}]);
             expect(result).to.eql(Buffer.from([0x00]));
         });
     });
 
     describe('can get the cache', () => {
+        const cacheName = 'name';
+
         it('method exists', () => {
             expect(cacheUtil.getCache).to.exist;
         });
 
         it('gets the cache', async () => {
-            await cacheUtil.getCache();
+            await cacheUtil.getCache(cacheName);
 
             expect(fsSpy.readFile.callCount).to.equal(1);
-            expect(fsSpy.readFile.firstCall.args[0]).to.equal('C:\\test\\m22.cache');
+            expect(fsSpy.readFile.firstCall.args[0]).to.equal('C:\\test\\' + cacheName);
         });
 
         it('decompresses the cache', async () => {
-            await cacheUtil.getCache();
+            await cacheUtil.getCache(cacheName);
 
             expect(zlibSpy.gunzip.callCount).to.equal(1);
             expect(zlibSpy.gunzip.firstCall.args[0]).to.eql(Buffer.from([0x01]));
         });
 
         it('returns expected result', async () => {
-            const cache = await cacheUtil.getCache();
+            const cache = await cacheUtil.getCache(cacheName);
             expect(cache).to.eql([{ test: 'test' }]);
         });
     });

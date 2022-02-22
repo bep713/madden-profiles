@@ -40,7 +40,7 @@ class EBXDataReader {
             dataObject.typeInfoGuid = typeInfoGuid;
             dataObject.type = type;
 
-            // console.log(`Type: ${type.name} @ offset: ${offset.toString(16)}`);
+            console.log(`Type: ${type.name} @ offset: ${offset.toString(16)}`);
 
             if (type) {
                 dataObject.fields = this._readFields(type, offset - 16);
@@ -59,7 +59,7 @@ class EBXDataReader {
             let fieldObj = new EBXField(field);
             fieldObj.ebxDataOffset = field.offset + offset;
 
-            // console.log(`Field: ${field.name} @ offset: ${fieldObj.ebxDataOffset.toString(16)}`);
+            console.log(`Field: ${field.name} @ offset: ${fieldObj.ebxDataOffset.toString(16)}`);
 
             if (field.type === EBXFieldTypes.Inherited) {
                 const inheritedType = this._types.getTypeByIndex(field.classRef);
@@ -142,7 +142,7 @@ class EBXDataReader {
                 const structType = this._types.getTypeByIndex(fieldObj.field.classRef);
                 structDataObject.type = structType;
 
-                // console.log(`Struct: ${structType.name} @ offset: ${fieldObj.ebxDataOffset.toString(16)}`);
+                console.log(`Struct: ${structType.name} @ offset: ${fieldObj.ebxDataOffset.toString(16)}`);
 
                 structDataObject.fields = this._readFields(structType, fieldObj.ebxDataOffset);
                 fieldObj.value = structDataObject.proxy;
@@ -166,10 +166,10 @@ class EBXDataReader {
                     const pointerType = this._types.getTypeByClassGuid(this._file.ebx.efix.classTypes[classRef]);
                     pointerDataObject.type = pointerType;
 
-                    // console.log(`Pointer: ${pointerType.name} @ offset: ${dataOffset.toString(16)}`);
+                    console.log(`Pointer: ${pointerType.name} @ offset: ${dataOffset.toString(16)}`);
 
                     pointerDataObject.fields = this._readFields(pointerType, dataOffset);
-                    fieldObj.value = new EBXPointer(EBXPointer.TYPES.INTERNAL, pointerDataObject);
+                    fieldObj.value = new EBXPointer(EBXPointer.TYPES.INTERNAL, pointerDataObject).proxy;
                 }
 
                 break;

@@ -12,7 +12,7 @@
     "@fstnetwork/cppzst": "^2.0.8",
     "conf": "^10.0.3",
     "env-paths": "^2.2.1",
-    "madden-file-tools": "^2.5.5",
+    "madden-file-tools": "^2.6.1",
     "plugnplay": "git+https://github.com/bep713/plugnplay.git",
     "uuid": "^8.3.2",
     "workerpool": "^6.1.5"

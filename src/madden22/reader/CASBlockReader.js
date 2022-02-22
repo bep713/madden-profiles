@@ -57,6 +57,23 @@ class Madden22CASBlockReader extends EventEmitter {
         });
     };
 
+    readFromStream(stream) {
+        return new Promise(async (resolve, reject) => {
+            pipeline(
+                stream,
+                this._casParser,
+                async (err) => {
+                    if (err) {
+                        reject(err);
+                    }
+            
+                    const ebxList = await Promise.all(this._parseEbxPromises)
+                    resolve(ebxList);
+                }
+            );
+        });
+    };
+
     _onCasChunk(chunk) {
         const firstBlock = chunk.blocks[0];
         
@@ -118,6 +135,7 @@ class Madden22CASBlockReader extends EventEmitter {
                 pipes.unshift(new Transform({
                     transform(chunk, enc, cb) {
                         ebxData = Buffer.concat([ebxData, chunk]);
+                        this.push(chunk);
                         cb();
                     }
                 }))

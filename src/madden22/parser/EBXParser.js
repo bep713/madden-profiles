@@ -24,6 +24,11 @@ class EBXParser extends FileParser {
             ebxd: {
                 magic: buf.readUInt32LE(4),
                 size: buf.readUInt32LE(8)
+            },
+            offsets: {
+                ebxd: this.currentBufferIndex - 8,
+                efix: null,
+                ebxx: null
             }
         }
 
@@ -48,6 +53,8 @@ class EBXParser extends FileParser {
     };
 
     _onEfixStart(buf) {
+        this._file.ebx.offsets.efix = this.currentBufferIndex - 8;
+
         this._file.ebx.efix = {
             magic: buf.readUInt32LE(0),
             size: buf.readUInt32LE(4)
@@ -89,6 +96,19 @@ class EBXParser extends FileParser {
 
         this._file.ebx.efix.dataOffsets = [];
         this._file.ebx.efix.unk3Offsets = [];
+
+        this._file.ebx.efix.offsets = {
+            dataOffsets: currentPos + 8,
+            unk3Offsets: null,
+            unk4s: null,
+            unk5s: null,
+            importReferences: null,
+            unk6s: null,
+            unk7s: null,
+            dataSize: null,
+            totalEbxDataSize1: null,
+            totalEbxDataSize2: null
+        };
         
         currentPos += 8;
 
@@ -96,6 +116,8 @@ class EBXParser extends FileParser {
             this._file.ebx.efix.dataOffsets.push(buf.readUInt32LE(currentPos));
             currentPos += 4;
         }
+
+        this._file.ebx.efix.offsets.unk3Offsets = currentPos;
 
         for (let i = 0; i < this._file.ebx.efix.unk3Count - this._file.ebx.efix.dataOffsetCount; i++) {
             this._file.ebx.efix.unk3Offsets.push(buf.readUInt32LE(currentPos));
@@ -107,6 +129,8 @@ class EBXParser extends FileParser {
 
         currentPos += 4;
 
+        this._file.ebx.efix.offsets.unk4s = currentPos;
+
         for (let i = 0; i < this._file.ebx.efix.unk4Count; i++) {
             this._file.ebx.efix.unk4s.push(buf.readUInt32LE(currentPos));
             currentPos += 4;
@@ -117,6 +141,8 @@ class EBXParser extends FileParser {
 
         currentPos += 4;
 
+        this._file.ebx.efix.offsets.unk5s = currentPos;
+
         for (let i = 0; i < this._file.ebx.efix.unk5Count; i++) {
             this._file.ebx.efix.unk5s.push(buf.readUInt32LE(currentPos));
             currentPos += 4;
@@ -126,6 +152,8 @@ class EBXParser extends FileParser {
         this._file.ebx.efix.importReferences = [];
         
         currentPos += 4;
+
+        this._file.ebx.efix.offsets.importReferences = currentPos;
 
         for (let i = 0; i < this._file.ebx.efix.importReferenceCount; i++) {
             this._file.ebx.efix.importReferences.push({
@@ -141,6 +169,8 @@ class EBXParser extends FileParser {
 
         currentPos += 4;
 
+        this._file.ebx.efix.offsets.unk6s = currentPos;
+
         for (let i = 0; i < this._file.ebx.efix.unk6Count; i++) {
             this._file.ebx.efix.unk6s.push(buf.readUInt32LE(currentPos));
             currentPos += 4;
@@ -151,10 +181,16 @@ class EBXParser extends FileParser {
 
         currentPos += 4;
 
+        this._file.ebx.efix.offsets.unk7s = currentPos;
+
         for (let i = 0; i < this._file.ebx.efix.unk7Count; i++) {
             this._file.ebx.efix.unk7s.push(buf.readUInt32LE(currentPos));
             currentPos += 4;
         }
+
+        this._file.ebx.efix.offsets.dataSize = currentPos;
+        this._file.ebx.efix.offsets.totalEbxDataSize1 = currentPos + 4;
+        this._file.ebx.efix.offsets.totalEbxDataSize2 = currentPos + 8;
 
         this._file.ebx.efix.dataSize = buf.readUInt32LE(currentPos);
         this._file.ebx.efix.totalEbxDataSize = buf.readUInt32LE(currentPos + 4);
@@ -164,6 +200,8 @@ class EBXParser extends FileParser {
     };
 
     _onEbxxStart(buf) {
+        this._file.ebx.offsets.ebxx = this.currentBufferIndex - 8;
+
         this._file.ebx.ebxx = {
             magic: buf.readUInt32LE(0),
             size: buf.readUInt32LE(4)
